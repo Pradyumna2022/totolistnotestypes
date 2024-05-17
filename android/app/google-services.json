@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "455199254231",
+    "firebase_url": "https://fir-f-f6116-default-rtdb.firebaseio.com",
+    "project_id": "fir-f-f6116",
+    "storage_bucket": "fir-f-f6116.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455199254231:android:b8117041a6e290a0377292",
+        "android_client_info": {
+          "package_name": "com.example.prodsubecom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkp-spZYMqRAINC6u84RRqQDSlg-vgjNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455199254231:android:7bd22dda64bf26c9377292",
+        "android_client_info": {
+          "package_name": "com.example.todofirelist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkp-spZYMqRAINC6u84RRqQDSlg-vgjNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455199254231:android:62c274d4117f9054377292",
+        "android_client_info": {
+          "package_name": "com.example.vinay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkp-spZYMqRAINC6u84RRqQDSlg-vgjNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
