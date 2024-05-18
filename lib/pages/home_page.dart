@@ -56,93 +56,104 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.grey.shade100,
-          elevation: 0,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false);
-                  });
-                },
-                icon: Icon(Icons.logout))
-          ],
-          title: Text(FirebaseAuth.instance.currentUser!.email.toString()),
-          centerTitle: true,
-        ),
+      appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
-        floatingActionButton: FloatingActionButton(
-            onPressed: openListBox, child: Icon(Icons.add)),
-        body: StreamBuilder(
-          stream: firestoreServices.getDataStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List userDataList = snapshot.data!.docs;
-              return ListView.builder(
-                  itemCount: userDataList.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot documentSnapshot = userDataList[index];
-                    String docId = documentSnapshot.id;
-                    Map<String, dynamic> data =
-                        documentSnapshot.data() as Map<String, dynamic>;
-                    String dataText = data['userData'];
-                    Timestamp timestamp = data['time'];
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut().then((value) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (route) => false,
+                );
+              });
+            },
+            icon: Icon(Icons.logout),
+          )
+        ],
+        title: Text(FirebaseAuth.instance.currentUser!.email.toString()),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.grey.shade100,
+      floatingActionButton: FloatingActionButton(
+        onPressed: openListBox,
+        child: Icon(Icons.add),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firestoreServices.getDataStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            List<DocumentSnapshot> userDataList = snapshot.data!.docs;
+            print(
+                "Documents in stream  >>>: ${userDataList.length}"); // Debug line
+            if (userDataList.isEmpty) {
+              return Center(child: Text("No data available"));
+            }
+            return ListView.builder(
+              itemCount: userDataList.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot documentSnapshot = userDataList[index];
+                String docId = documentSnapshot.id;
+                Map<String, dynamic> data =
+                    documentSnapshot.data() as Map<String, dynamic>;
+                String dataText = data['userData'];
+                Timestamp timestamp = data['time'];
 
-                    // Convert Timestamp to DateTime
-                    DateTime dateTime = timestamp.toDate();
+                DateTime dateTime = timestamp.toDate();
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd').format(dateTime);
 
-                    // Format DateTime to String
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(dateTime);
-
-                    return Padding(
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                      child: ListTile(
+                        title: Text(
+                          dataText,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 19),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text(
-                              dataText,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 19),
+                        subtitle: Text(
+                          formattedDate,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 19),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.settings),
+                              onPressed: () => openListBox(docId: docId),
                             ),
-                            subtitle: Text(
-                              formattedDate,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 19),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () =>
+                                  firestoreServices.deleteData(docId),
                             ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.settings),
-                                  onPressed: () => openListBox(docId: docId),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () =>
-                                      firestoreServices.deleteData(docId),
-                                ),
-                              ],
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                    );
-                  });
-            } else {
-              return const Text("No data..");
-            }
-          },
-        ));
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: Text("No data available"));
+          }
+        },
+      ),
+    );
   }
 }
